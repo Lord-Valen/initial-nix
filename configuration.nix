@@ -3,8 +3,10 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, lib, ... }:
-
 let
+  enableMultiple = list:
+    lib.genAttrs list (x:
+      { enable = true; });
   setMultiple = value: attrList:
     lib.genAttrs attrList ( x: value );
 in

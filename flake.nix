@@ -3,14 +3,17 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
-      nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixt.url = "github:nix-community/nixt/typescript-rewrite";
+    nixt = {
+      url = "github:nix-community/nixt/typescript-rewrite";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }: {
     nixosConfigurations = {
-      logos = nixpkgs.lib.nixosSystem {
+      nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux"; # the system architecture
         modules = [
             home-manager.nixosModules.home-manager
