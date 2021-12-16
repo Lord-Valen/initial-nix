@@ -1,7 +1,5 @@
-{ lib, ... }:
-
+{ lib }:
 with lib;
-
 let
   getDir =  (dir: mapAttrs (file: type:
     if type == "directory"
@@ -22,5 +20,4 @@ let
       (dirFiles dir));
 
   utilPackages = map (m: callPackage (import m) {}) (recImport ./.);
-
 in recImport

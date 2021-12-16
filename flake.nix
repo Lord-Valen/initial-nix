@@ -9,28 +9,31 @@
       url = "github:nix-community/nixt/typescript-rewrite";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
-
-  outputs = inputs@{ nixpkgs, home-manager, ... }: {
-    nixosConfigurations = let
-      recImport =
-        nixpkgs.legacyPackages.x86_64-linux.callPackage ./utils/recImport.nix
-        { };
-      localModules = recImport ./modules;
-    in {
-      nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux"; # the system architecture
-        modules = localModules ++ [
-          home-manager.nixosModules.home-manager
-          ./hosts/x86_64-linux/nixos
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.lord-valen = import ./hosts/x86_64-linux/nixos/home.nix;
-          }
-        ];
-        specialArgs = { inherit inputs; };
-      };
+    ldlework = {
+      url = "github:dustinlacewell/dotfiles.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+
+  outputs = inputs@{ nixpkgs, home-manager, ... }:
+    with import ./utils {};
+    {
+      nixosConfigurations = let
+        localModules = recImport ./modules;
+      in {
+        nixos = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux"; # the system architecture
+          modules = localModules ++ inputs.ldlework.nixosModules ++ [
+            home-manager.nixosModules.home-manager
+            ./hosts/x86_64-linux/nixos
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.lord-valen = import ./hosts/x86_64-linux/nixos/home.nix;
+            }
+          ];
+          specialArgs = { inherit inputs; };
+        };
+      };
+    };
 }

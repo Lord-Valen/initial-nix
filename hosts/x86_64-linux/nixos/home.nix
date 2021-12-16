@@ -1,5 +1,6 @@
 { pkgs, ... }:
 
 {
-  home.packages = [ pkgs.htop pkgs.fortune ];
+  valen.fortune.enable = true;
+  home.packages = [ pkgs.htop ];
 }
