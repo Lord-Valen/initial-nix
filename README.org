@@ -1,0 +1,2 @@
+#+TITLE: Initial NixOS Config
+Brute forcing to a functioning config to later be refined into a more proper config.

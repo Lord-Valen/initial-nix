@@ -1,5 +1,5 @@
-{ lib }:
+{ lib, ... }:
 with lib;
 let
-  # WIP
+  enumHosts = {};# WIP
 in enumHosts

@@ -1,5 +1,4 @@
-{ lib }:
-with lib;
+{ lib, ... }:
 let
   enableMultiple = list:
     lib.genAttrs list (x:

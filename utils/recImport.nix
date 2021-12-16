@@ -1,4 +1,4 @@
-{ lib }:
+{ lib, ... }:
 with lib;
 let
   getDir =  (dir: mapAttrs (file: type:
@@ -19,5 +19,4 @@ let
       ((hasSuffix ".nix" file) && (!(hasSuffix ".lib.nix" file)) && (file != "default.nix") && (file != "shell.nix")))
       (dirFiles dir));
 
-  utilPackages = map (m: callPackage (import m) {}) (recImport ./.);
 in recImport
