@@ -15,26 +15,33 @@
     };
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, ... }:
-    {
-      nixosConfigurations = let
-        recImport = nixpkgs.legacyPackages.x86_64-linux.callPackage ./utils/recImport.nix {};
-        localModules = recImport ./modules;
-        localUtils = recImport ./utils;
-      in {
-        nixos = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux"; # the system architecture
-          modules = localModules ++ localUtils++ inputs.ldlework.nixosModules ++ [
-            home-manager.nixosModules.home-manager
-            ./hosts/x86_64-linux/nixos
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.lord-valen = import ./hosts/x86_64-linux/nixos/home.nix;
-            }
-          ];
-          specialArgs = { inherit inputs; };
+  outputs = inputs@{ self, nixpkgs, home-manager, ldlework, ... }:
+    let
+      lib = nixpkgs.lib.extend (self: super: {mine = import ./lib { lib = self; }; });
+      pkgs = import nixpkgs {
+        inherit system;
+        config = { allowBroken = true; allowUnfree = true; };
+      };
+      system = "x86_64-linux";
+    in
+      with lib;
+      with lib.mine; {
+        nixosConfigurations = let
+          localModules = recImport ./modules;
+        in {
+          nixos = nixosSystem {
+            inherit system;
+            modules = localModules ++ ldlework.nixosModules ++ [
+              home-manager.nixosModules.home-manager
+              ./hosts/${system}/nixos
+              {
+                home-manager.useGlobalPkgs = true;
+                home-manager.useUserPackages = true;
+                home-manager.users.lord-valen = import ./hosts/${system}/nixos/home.nix;
+              }
+            ];
+            specialArgs = { inherit inputs; };
+          };
         };
       };
-    };
 }

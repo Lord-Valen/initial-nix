@@ -1,4 +1,6 @@
 { config, pkgs, lib, inputs, ... }:
+with lib;
+with lib.mine;
 {
   nix = {
     package = pkgs.nixFlakes;
@@ -28,6 +30,7 @@
   security.sudo.wheelNeedsPassword = false;
 
   nixpkgs.config.allowUnfree = true;
+
   services = {
     xserver = {
       enable = true;
@@ -82,5 +85,6 @@
     rofi
     inputs.nixt.defaultPackage.x86_64-linux
   ];
-  system.stateVersion = "21.11"; # Did you read the comment?
+
+  system.stateVersion = "21.11";
 }
