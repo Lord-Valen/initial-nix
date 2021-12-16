@@ -9,6 +9,10 @@
       url = "github:nix-community/nixt/typescript-rewrite";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ldlework = {
+      url = "github:dustinlacewell/dotfiles.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }: {
@@ -20,7 +24,7 @@
     in {
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux"; # the system architecture
-        modules = localModules ++ [
+        modules = localModules ++ inputs.ldlework.nixosModules ++ [
           home-manager.nixosModules.home-manager
           ./hosts/x86_64-linux/nixos
           {
