@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 let
   enableMultiple = list:
     lib.genAttrs list (x:
@@ -16,10 +16,10 @@ in
     extraOptions = ''experimental-features = nix-command flakes'';
   };
 
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  ldlework.vm = {
+    enable = true;
+    graphical = true;
+  };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -50,11 +50,11 @@ in
         "enable"
         "enableContribAndExtras"
       ];
-      xkbVariant = "colemak_dh";
+      # xkbVariant = "colemak_dh";
       xkbOptions = "shift:both_capslock";
     };
   };
-  
+
   fonts = {
     fontDir.enable = true;
     enableDefaultFonts = true;
@@ -76,7 +76,7 @@ in
       };
     };
   };
-    
+
   users.users.lord-valen = {
     isNormalUser = true;
     createHome = true;
@@ -96,8 +96,9 @@ in
     discord
     xclip
     rofi
+    inputs.nixt.defaultPackage.x86_64-linux
   ];
-   
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

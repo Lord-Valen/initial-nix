@@ -12,17 +12,22 @@
   };
 
   outputs = inputs@{ nixpkgs, home-manager, ... }: {
-    nixosConfigurations = {
+    nixosConfigurations = let
+      recImport =
+        nixpkgs.legacyPackages.x86_64-linux.callPackage ./utils/recImport.nix
+        { };
+      localModules = recImport ./modules;
+    in {
       nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux"; # the system architecture
-        modules = [
-            home-manager.nixosModules.home-manager
-            ./configuration.nix
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.lord-valen = import ./home.nix;
-            }
+        modules = localModules ++ [
+          home-manager.nixosModules.home-manager
+          ./hosts/x86_64-linux/nixos
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.lord-valen = import ./hosts/x86_64-linux/nixos/home.nix;
+          }
         ];
         specialArgs = { inherit inputs; };
       };
