@@ -3,13 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, lib, inputs, ... }:
-let
-  enableMultiple = list:
-    lib.genAttrs list (x:
-      { enable = true; });
-  setMultiple = value: attrList:
-    lib.genAttrs attrList ( x: value );
-in
 {
   nix = {
     package = pkgs.nixFlakes;
@@ -50,7 +43,7 @@ in
         "enable"
         "enableContribAndExtras"
       ];
-      # xkbVariant = "colemak_dh";
+      xkbVariant = "colemak_dh";
       xkbOptions = "shift:both_capslock";
     };
   };
